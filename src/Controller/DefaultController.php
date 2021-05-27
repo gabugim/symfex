@@ -10,12 +10,22 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/defaults/", name="app_index")
+     * @Route("/defaults/", requirements={"page"="\d+"}, name="app_index")
      */
     public function index(): Response
     {
         return $this->render('default/index.html.twig', [
             'website' => 'Wild Séries',
+        ]);
+    }
+    /**
+     * @Route("/defaults/{page}",  methods={"GET"}, requirements={"page"="\d+"}, name="app_show")
+     */
+    public function show(int $page): Response
+    {
+        return $this->render('default/index.html.twig', [
+            'website' => 'Wild Séries',
+            'page' => $page
         ]);
     }
 }
