@@ -11,6 +11,7 @@ class DefaultController extends AbstractController
 {
     /**
      * @Route("/defaults/", requirements={"page"="\d+"}, name="app_index")
+     * @Route("/",name="app_index")
      */
     public function index(): Response
     {
