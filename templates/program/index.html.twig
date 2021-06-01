@@ -4,7 +4,7 @@
 
 {% block body %}
     <h1>Toutes les series de la table program : </h1>
-    {{ dump() }}
+    {% dump(programs) %}
     {% for program in programs %}
         <div>
             <h2> {{  loop.index }} / {{ program.title }} - Categorie : {{ program.category.name }}</h2>
