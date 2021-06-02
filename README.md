@@ -1,4 +1,3 @@
 # symfex
 
-exo 10 video link
-https://www.loom.com/share/88fa50844733453dbcc43d14189273d9
+https://www.loom.com/share/07db0e8f7be6434fadf4f2fbe0f85fb5
