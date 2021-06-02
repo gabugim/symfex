@@ -15,8 +15,9 @@
     {% else %}
         Aucune série de trouvée.
     {% endfor %}
-
-    <a href="{{  path('app_index') }}">
-        Retour à l'accueil
+    <a href="{{ path("program_new") }}">Ajouter une série</a>
+<br>
+    <a href="{{  path('category_index') }}">
+        Retour aux categoris
     </a>
 {% endblock %}

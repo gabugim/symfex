@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %} All programs {% endblock %}
+{% block body %}
+<h3>{{ program.title }} saison {{season.id}}
+    Episode {{ episode.number }} : {{ episode.title}}</h3>
+    <p>{{ episode.synopsis}}</p>
+    <br>
+    <P> en savoir plus? Abonne toi!!!! <3 merci pour tout c'est grace a vous que l'on peut accomplir notre tache et délivrer du bonheur tous, peace mon frère. </P>
+<br>
+<a href="{{ path("program_season_show", { program_id: program.id, season_id: season.id }) }}">revenir a la liste des épisodes</a>
+
+{% endblock %}
