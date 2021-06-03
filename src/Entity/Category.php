@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Entity;
+
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use App\Repository\CategoryRepository;
@@ -20,6 +22,8 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank()
+     * @Assert\Length(max="100")
      */
     private $name;
 

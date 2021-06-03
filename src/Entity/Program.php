@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\ProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProgramRepository::class)
+ * @UniqueEntity("title")
  */
 class Program
 {
@@ -20,12 +23,21 @@ class Program
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(name ="title", type="string", length=100, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(max="100")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=555)
+     * @Assert\NotBlank()
+     * @Assert\Length(max="555")
+     * @Assert\Regex(
+     *     pattern="/^((?!plus belle la vie).)*$/s",
+     *     match=true,
+     *     message="On parle de vraies séries ici"
+     * )
      */
     private $summary;
 
