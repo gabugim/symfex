@@ -4,14 +4,6 @@
 {% block title %}Série #{{ program.id }}{% endblock %}
 
 {% block body %}
-    {{ dump() }}
-    {% for season in program.seasons %}
-        <p>{{ season.description }}{{ season.year }}</p>
-        <p>{{ program.id }}</p>
-        <p>{{ season.id }}</p>
-         <a href="{{ path("program_season_show", { program_id: program.id, season_id: season.id }) }}">Voir la fiche</a>
-        {% dump(season.id) %}
-    {% endfor %}
     <div class="media">
         <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
         <div class="media-body">
@@ -29,6 +21,12 @@
             <li>Aucun acteur pour cette série</li>
         {% endfor %}
     </ul>
+
+    {% for season in program.seasons %}
+        <p>Saison n°{{ season.number }} sortie en {{ season.year }}</p>
+        <p>Description de la saison :{{ season.description }}</p>
+        <a href="{{ path("program_season_show", { program_id: program.id, season_id: season.id }) }}">Voir la fiche</a>
+    {% endfor %}
 
     <a href="{{ path('program_index') }}">
         Retour à la liste des programmes
