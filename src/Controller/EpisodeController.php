@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\Mailer;
 use App\Service\Slugify;
 use App\Entity\Episode;
 use App\Form\EpisodeType;
@@ -30,7 +31,7 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/new", name="episode_new", methods={"GET","POST"})
      */
-    public function new(Request $request,  Slugify $slugify): Response
+    public function new(Request $request,  Slugify $slugify, Mailer $mailer): Response
     {
         $episode = new Episode();
         $form = $this->createForm(EpisodeType::class, $episode);
@@ -42,7 +43,7 @@ class EpisodeController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($episode);
             $entityManager->flush();
-
+            $mailer->sendEmail($episode, 'episode/newEpisodeEmail.html.twig');
             return $this->redirectToRoute('episode_index');
         }
 
