@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-
+use App\Service\Slugify;
 use App\Entity\Program;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -12,19 +12,27 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
 
     public const PROGRAMS = [
-        "Bill contre les chats-garoux",
+        "  Bill  contre les 123%/é'(-è chats-garoux",
         "Manu et le mystère de la tomate bleu",
         "Josef et ses dix frère",
         "Qui as mangé Marie?",
         "nom de code: miam"
 
         ];
+    private $slug;
+
+    public function __construct(Slugify $slug)
+    {
+        $this->slug = $slug;
+    }
     public function load(ObjectManager $manager)
     {
 
         foreach (self::PROGRAMS as $key => $programName) {
             $program = new Program();
             $program->setTitle($programName);
+            $slug = $this->slug->generate($programName);
+            $program->setSlug($slug);
             $program->setSummary('lorem ipsum dolor est');
             $program->setCategory($this->getReference('category_0'));
             $this->addReference('program_' . $key, $program);
