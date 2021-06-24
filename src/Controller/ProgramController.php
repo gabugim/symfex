@@ -2,6 +2,10 @@
 
 
 namespace App\Controller;
+
+use App\Entity\User;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Form\ProgramType;
 use App\Entity\Episode;
 use App\Entity\Program;
@@ -15,6 +19,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/programs", name="program_")
@@ -56,6 +61,7 @@ class ProgramController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Deal with the submitted data
             // Get the Entity Manager
+            $program->setOwner($this->getUser());
             $entityManager = $this->getDoctrine()->getManager();
             //slugify title
             $slug = $slugify->generate($program->getTitle());
@@ -72,6 +78,30 @@ class ProgramController extends AbstractController
         // Render the form
         return $this->render('program/new.html.twig', [
             "form" => $form->createView(),
+        ]);
+    }
+
+    /**
+    @Route("/{id}/edit", name="program_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, Program $program): Response
+    {
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if (!($this->getUser() == $program->getOwner())) {
+            // If not the owner, throws a 403 Access Denied exception
+            throw new AccessDeniedException('Only the owner can edit the program!');
+        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('program_index');
+        }
+
+        return $this->render('program/edit.html.twig', [
+            'program' => $program,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -118,12 +148,36 @@ class ProgramController extends AbstractController
      * @ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episode_slug": "slug"}})
      * @return Response
      */
-    public function showEpisode(Program $program, Season $season, Episode $episode)
+    public function showEpisode(Request $request, Program $program, Season $season, Episode $episode) : Response
     {
+        // Create a new Comment Object
+        $comment = new Comment();
+        // Create the associated Form
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        // Render the form
+        if ($form->isSubmitted()) {
+            // Deal with the submitted data
+            // Get the Entity Manager
+            $entityManager = $this->getDoctrine()->getManager();
+            $comment->setUser($this->getUser());
+
+            $comment->setEpisode($episode);
+            // Persist Category Object
+            $entityManager->persist($comment);
+            // Flush the persisted object
+            $entityManager->flush();
+            // Finally redirect to categories list
+            return $this->redirectToRoute('program_episode_show');
+        }
+
+
         return $this->render('program/showEpisode.html.twig', [
+            "form" => $form->createView(),
             'program' => $program,
             'season' => $season,
-            'episode' => $episode
+            'episode' => $episode,
+            'comment' => $comment
         ]);
     }
 }
